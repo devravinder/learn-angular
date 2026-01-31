@@ -1,0 +1,53 @@
+# Angular - V21
+
+## Terminlogy
+
+- IOC
+- componenet, @Component
+- Service, @Injectable
+- selector, template, style, imports
+- type of selectors
+- componets composition
+- directives, pipes, data binding, event binding, two-way binding
+- @if, @for, detect (key)
+- routing, forms
+  - ActivatedRoute
+  - forms
+    - Reference
+      - [Ref](https://angular.dev/essentials/signal-forms)
+      - [Ref](https://angular.dev/guide/forms)
+    - Reactive forms
+    - Template-driven forms
+    - form(), [formField], vlaue()
+- Observables, RxJs
+- Signals
+  - computed
+  - WritableSignal
+  - ReadOnly
+  - linkedSignal
+  - assertNotInReactiveContext
+- effect, afterRenderEffct
+  - untracked
+- Resource
+- Change Detection:
+  - onPush
+  - @HostListener
+  - ChnageDetecrorRef
+- zone pollution, - [Ref](https://angular.dev/best-practices/zone-pollution)
+- NgZone, runOutsideAngular
+- inject
+- Component Lifecycle - [Ref](https://angular.dev/guide/components/lifecycle) ***
+- context ?
+- Custom events with outputs
+- `<ng-content>` ( single & multiple)
+- `ng-template`, `<ng-container>`
+- Variables in templates
+  - @let
+- Deferred loading
+  - @defer
+- Host elements, host ( Binding to the host element )
+  - The @HostBinding and @HostListener
+  - Binding collisions
+  - Injecting host element attributes
+- Referencing component children with queries
+  - viewChild
