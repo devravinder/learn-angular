@@ -73,6 +73,7 @@
 
 - routing
   - router-outlet
+    - named outlet
   - RouterLink (routerLink) directive
     - directive = component without template
   - lazy loading
@@ -105,6 +106,9 @@
 
 - FormsModule : to work with Forms/input
   - [(ngModel)]="searchTerm"
+
+- slots (`<ng-content />`)
+  - named slots
 
 ## CLI
 

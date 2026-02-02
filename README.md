@@ -10,6 +10,7 @@
   - [Code](https://github.com/thisiszoaib/angular-ecommerce)
 
 - v18 - [Code with Ashan](https://www.youtube.com/watch?v=oUmVFHlwZsI)
+  - [Code](https://github.com/AhsanAyaz/angular-in-90ish/tree/main/first-ng-app/src/app)
 
 - v14 -  [Envato Trust+](https://www.youtube.com/watch?v=JWhRMyyF7nc)
 
