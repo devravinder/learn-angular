@@ -44,9 +44,8 @@ export const taskResolver: ResolveFn<Task> = (
 })
 export class TaskDetails {
   private router = inject(Router);
-  private route = inject(ActivatedRoute);
   taskService = inject(TaskService);
-
+  private route = inject(ActivatedRoute);
   data = toSignal(this.route.data);
   task = computed(() => this.data()!['task'] as Task);
 

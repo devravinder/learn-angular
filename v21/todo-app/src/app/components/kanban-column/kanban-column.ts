@@ -15,7 +15,14 @@ import { TaskCard } from '../task-card/task-card';
           {{ tasks()?.length || 0 }}
         </span>
       </div>
-      <button (click)="onAddClick.emit(title())" class="text-foreground/40 hover:text-foreground/50 cursor-pointer">{{ ADD }}</button>
+      @if (onAddClick) {
+        <button
+          (click)="onAddClick.emit(title())"
+          class="text-foreground/40 hover:text-foreground/50 cursor-pointer"
+        >
+          {{ ADD }}
+        </button>
+      }
     </div>
 
     <div class="grow p-4 space-y-3">
@@ -28,7 +35,10 @@ import { TaskCard } from '../task-card/task-card';
       @if (!tasks()?.length) {
         <div class="text-center py-8 text-muted-foreground">
           <p class="text-sm">No tasks yet</p>
-          <button (click)="onAddClick.emit(title())" class="text-primary hover:text-primary-dark text-sm mt-1">
+          <button
+            (click)="onAddClick.emit(title())"
+            class="text-primary hover:text-primary-dark text-sm mt-1"
+          >
             Add your first task
           </button>
         </div>
@@ -41,5 +51,5 @@ export class KanbanColumn {
   tasks = input<Task[]>();
   title = input.required<string>();
   ADD = ADD;
-  onAddClick = output<string>()
+  onAddClick = output<string>();
 }

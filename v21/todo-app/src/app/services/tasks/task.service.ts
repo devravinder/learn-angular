@@ -106,4 +106,8 @@ export class TaskService {
   getTask(id: string) {
     return this.tasks().find((task) => task.Id === id);
   }
+
+  getTasksByStatus(status: string) {
+    return this.tasks().filter((task) => task.Status === status);
+  }
 }
