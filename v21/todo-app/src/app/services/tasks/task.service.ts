@@ -1,7 +1,7 @@
 import { inject, Injectable, signal } from '@angular/core';
+import { getId } from '../../util/common';
 import { defaultTasks } from '../../util/data';
 import { ConfigService } from '../config/config.service';
-import { getId } from '../../util/common';
 
 const SideEffectKey: Partial<{
   [K in keyof TodoConfig]: keyof Task | undefined;
@@ -102,4 +102,8 @@ export class TaskService {
   onConfigChange = (value: TodoConfig, sideEffects: Change[]) => {
     this.handleSideEffects(sideEffects);
   };
+
+  getTask(id: string) {
+    return this.tasks().find((task) => task.Id === id);
+  }
 }

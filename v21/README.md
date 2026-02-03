@@ -27,6 +27,7 @@
   - ReadOnly
   - linkedSignal
   - assertNotInReactiveContext
+  - toSignal
 - effect, afterRenderEffct
   - untracked
 - Resource

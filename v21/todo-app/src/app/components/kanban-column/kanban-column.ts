@@ -1,6 +1,6 @@
-import { Component, input } from '@angular/core';
-import { TaskCard } from '../task-card/task-card';
+import { Component, input, output } from '@angular/core';
 import { ADD } from '../../util/icons';
+import { TaskCard } from '../task-card/task-card';
 
 @Component({
   selector: 'app-kanban-column',
@@ -15,7 +15,7 @@ import { ADD } from '../../util/icons';
           {{ tasks()?.length }}
         </span>
       </div>
-      <button class="text-slate-400 hover:text-slate-600 cursor-pointer">{{ ADD }}</button>
+      <button (click)="onAddClick.emit(title())" class="text-slate-400 hover:text-slate-600 cursor-pointer">{{ ADD }}</button>
     </div>
 
     <div class="grow p-4 space-y-3">
@@ -41,4 +41,5 @@ export class KanbanColumn {
   tasks = input<Task[]>();
   title = input.required<string>();
   ADD = ADD;
+  onAddClick = output<string>()
 }

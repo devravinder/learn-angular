@@ -74,23 +74,24 @@
 
 ## Tasks
 
-### 📝 To Do
+### ✅ Done
 
 #### 001 | Priority Color in Task card
 
 - Title: Priority Color in Task card
-- Status: 📝 To Do
+- Status: ✅ Done
 - Priority: 🟢 Low
 - createdDate: 2026-02-02 11:34:29:212
-- lastModifiedDate: 2026-02-02 11:34:16:113
+- lastModifiedDate: 2026-02-03 07:10:59:588
 - dueDate: 2026-02-02 05:30:00:000
 - Id: 001
+- completedDate: 2026-02-03 07:10:59:588
 
 ##### Tags
 
-
 ##### Subtasks
 
+### 📝 To Do
 
 #### 002 | Settings/Config
 
@@ -104,9 +105,7 @@
 
 ##### Tags
 
-
 ##### Subtasks
-
 
 ---
 To view this file in Kanban dashboard open this file(file parent folder) with [Task Manager](https://todo.paravartech.com/)

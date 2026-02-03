@@ -22,12 +22,17 @@ import { TaskService } from '../../services/tasks/task.service';
 
       <div class="flex items-center space-x-2">
         <app-button-primary (onClick)="toggleModal()" [label]="ADD + ' New Task'" />
-        <app-button routerLink="/settings" [label]="FOLDER" />
-        <app-button routerLink="/settings" [label]="ARCHIVE" />
-        <app-button routerLink="/settings" [label]="SETTINGS" />
+        <app-button routerLink="settings" [label]="FOLDER" />
+        <app-button routerLink="settings" [label]="ARCHIVE" />
+        <app-button routerLink="settings" [label]="SETTINGS" />
       </div>
 
-      <app-modal [isOpen]="showModal()" (onClose)="toggleModal()" title="Test" class="absolute">
+      <app-modal
+        [isOpen]="showModal()"
+        (onClose)="toggleModal()"
+        title="Create Task"
+        class="absolute"
+      >
         <app-task-form [data]="task()" (onCancel)="toggleModal()" (onSubmit)="onSubmit($event)" />
       </app-modal>
     </div>
@@ -57,18 +62,7 @@ export class Header {
   }
 
   onSubmit(task: Task) {
-    console.log(task.Id, '----', task);
-
-    if (task.Id) {
-      console.log("in add ")
-      this.taskService.editTask(task.Id!, task);
-    } else {
-      console.log("edit")
-      this.taskService.addTask(task);
-    }
-
-    console.log("end")
-
+    this.taskService.addTask(task);
     this.toggleModal();
   }
 }

@@ -3,12 +3,14 @@ import { CALENDER, CLOCK, EDIT, USER } from '../../util/icons';
 import { DateFormatterPipe } from '../../pipes/date-formatter/date-formatter-pipe';
 import { NgStyle } from '@angular/common';
 import { ConfigService } from '../../services/config/config.service';
+import { Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-task-card',
-  imports: [DateFormatterPipe, NgStyle],
+  imports: [DateFormatterPipe, NgStyle, RouterLink],
   template: `
     <div
+      [routerLink]="['',task().Id]"
       class="cursor-pointer flex flex-col gap-6 bg-white rounded-lg border border-slate-200 p-4 hover:shadow-md transition-shadow"
     >
       <div class="flex flex-col gap-1">
@@ -28,7 +30,10 @@ import { ConfigService } from '../../services/config/config.service';
       <div class="flex flex-col gap-4">
         <div class="flex flex-wrap gap-1">
           @if (task().Priority) {
-            <span class="text-xs py-1 px-2 rounded-md bg-emerald-100" [ngStyle]="taskPriorityStyles()" >
+            <span
+              class="text-xs py-1 px-2 rounded-md bg-emerald-100"
+              [ngStyle]="taskPriorityStyles()"
+            >
               {{ task().Priority }}
             </span>
           }
@@ -54,7 +59,9 @@ import { ConfigService } from '../../services/config/config.service';
               </span>
             }
             @if (task().Tags!.length > 3) {
-              <span class="inline-flex items-center px-2 py-1 text-xs text-slate-500"> +{{ task().Tags!.length - 3 }} </span>
+              <span class="inline-flex items-center px-2 py-1 text-xs text-slate-500">
+                +{{ task().Tags!.length - 3 }}
+              </span>
             }
           }
         </div>
@@ -89,8 +96,8 @@ import { ConfigService } from '../../services/config/config.service';
   styles: ``,
 })
 export class TaskCard {
-
-  configService = inject(ConfigService)
+  router = inject(Router);
+  configService = inject(ConfigService);
   task = input.required<Task>();
   USER = USER;
   CALENDER = CALENDER;
@@ -110,8 +117,9 @@ export class TaskCard {
       : {},
   );
 
-  taskPriorityStyles = computed(()=>({
-    backgroundColor: this.configService.config()["Priority Colors"][this.task().Priority]?.["bg-color"],
-    color: this.configService.config()["Priority Colors"][this.task().Priority]?.["text-color"],
-  }))
+  taskPriorityStyles = computed(() => ({
+    backgroundColor:
+      this.configService.config()['Priority Colors'][this.task().Priority]?.['bg-color'],
+    color: this.configService.config()['Priority Colors'][this.task().Priority]?.['text-color'],
+  }));
 }
