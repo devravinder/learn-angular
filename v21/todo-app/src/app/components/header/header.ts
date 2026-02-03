@@ -1,11 +1,12 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { Button } from '../button/button';
 import { ButtonPrimary } from '../button-primary/button-primary';
-import { FOLDER, ARCHIVE, SETTINGS, ADD } from '../../util/icons';
+import { FOLDER, ARCHIVE, SETTINGS, ADD, SUN, MOON } from '../../util/icons';
 import { Router, RouterLink } from '@angular/router';
 import { Modal } from '../modal/modal';
 import { TaskForm } from '../task-form/task-form';
 import { TaskService } from '../../services/tasks/task.service';
+import { ThemeService } from '../../services/theme/theme.service';
 @Component({
   selector: 'app-header',
   imports: [Button, ButtonPrimary, RouterLink, Modal, TaskForm],
@@ -17,7 +18,7 @@ import { TaskService } from '../../services/tasks/task.service';
             <img src="./favicon.png" />
           </span>
         </div>
-        <h1 class="text-xl font-semibold text-slate-800">Todo App</h1>
+        <h1 class="text-xl font-semibold text-foreground">Todo App</h1>
       </div>
 
       <div class="flex items-center space-x-2">
@@ -25,6 +26,7 @@ import { TaskService } from '../../services/tasks/task.service';
         <app-button routerLink="settings" [label]="FOLDER" />
         <app-button routerLink="settings" [label]="ARCHIVE" />
         <app-button routerLink="settings" [label]="SETTINGS" />
+        <app-button (onClick)="themeService.toggleTheme()" [label]="themeService.theme() =='dark' ? SUN : MOON" />
       </div>
 
       <app-modal
@@ -44,10 +46,14 @@ export class Header {
   FOLDER = FOLDER;
   ARCHIVE = ARCHIVE;
   SETTINGS = SETTINGS;
+  SUN = SUN
+  MOON = MOON
 
   private router = inject(Router);
 
   taskService = inject(TaskService);
+
+  themeService = inject(ThemeService)
 
   showModal = signal<boolean>(false);
 

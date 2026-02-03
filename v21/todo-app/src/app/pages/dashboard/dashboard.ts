@@ -17,7 +17,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
         [title]="group"
         [tasks]="groupedTasks()[group]"
         (onAddClick)="onAddClick($event)"
-        class="flex flex-col h-fit shrink-0 w-80 rounded-lg border border-slate-300"
+        class="flex flex-col h-fit shrink-0 w-80 rounded-lg border border-border"
       />
     }
     @if (showModal()) {

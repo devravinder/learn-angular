@@ -7,15 +7,15 @@ import { TaskCard } from '../task-card/task-card';
   imports: [TaskCard],
   template: `
     <div
-      class="sticky flex items-center justify-between bg-white rounded-t-lg p-4 border-b border-slate-300"
+      class="sticky flex items-center justify-between bg-background rounded-t-lg p-4 border-b border-border"
     >
       <div class="flex items-center space-x-2">
-        <h2 class="font-semibold text-slate-800">{{ title() }}</h2>
-        <span class="bg-slate-100 text-slate-600 text-xs px-2 py-1 rounded-full">
-          {{ tasks()?.length }}
+        <h2 class="font-semibold text-foreground">{{ title() }}</h2>
+        <span class="bg-muted text-muted-foreground text-xs px-2 py-1 rounded-full">
+          {{ tasks()?.length || 0 }}
         </span>
       </div>
-      <button (click)="onAddClick.emit(title())" class="text-slate-400 hover:text-slate-600 cursor-pointer">{{ ADD }}</button>
+      <button (click)="onAddClick.emit(title())" class="text-foreground/40 hover:text-foreground/50 cursor-pointer">{{ ADD }}</button>
     </div>
 
     <div class="grow p-4 space-y-3">
@@ -26,7 +26,7 @@ import { TaskCard } from '../task-card/task-card';
       }
 
       @if (!tasks()?.length) {
-        <div class="text-center py-8 text-slate-400">
+        <div class="text-center py-8 text-muted-foreground">
           <p class="text-sm">No tasks yet</p>
           <button class="text-blue-600 hover:text-blue-700 text-sm mt-1">
             Add your first task

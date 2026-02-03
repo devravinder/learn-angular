@@ -155,6 +155,7 @@ export const defaultTasks = [
     },
     {
         "Title": "Write Readme to Github projects",
+        "Description":"write docs info",
         "Status": "📝 To Do",
         "Priority": "🟢 Low",
         "createdDate": "2026-01-07T00:55:03.002Z",

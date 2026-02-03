@@ -11,19 +11,19 @@ import { Router, RouterLink } from '@angular/router';
   template: `
     <div
       [routerLink]="['',task().Id]"
-      class="cursor-pointer flex flex-col gap-6 bg-white rounded-lg border border-slate-200 p-4 hover:shadow-md transition-shadow"
+      class="cursor-pointer flex flex-col gap-6 bg-card rounded-lg border border-border p-4 hover:shadow-md dark:hover:shadow-muted transition-shadow"
     >
       <div class="flex flex-col gap-1">
         <div class="flex flex-row justify-between">
-          <span class="text-xs text-slate-500 line-clamp-1"> #{{ task().Id }} </span>
-          <button onClick="{onTaskClick}" class="cursor-pointer text-xs">{{ EDIT }}</button>
+          <span class="text-xs text-muted-foreground line-clamp-1"> #{{ task().Id }} </span>
+          <button class="cursor-pointer text-xs">{{ EDIT }}</button>
         </div>
-        <h3 class="font-medium text-slate-800 text-md leading-tight line-clamp-1 flex-1">
+        <h3 class="font-medium text-foreground/90 text-md leading-tight line-clamp-1 flex-1">
           {{ task().Title }}
         </h3>
       </div>
 
-      <p class="text-sm text-slate-500 line-clamp-3">
+      <p class="text-sm text-muted-foreground line-clamp-3">
         {{ task().Description }}
       </p>
 
@@ -59,7 +59,7 @@ import { Router, RouterLink } from '@angular/router';
               </span>
             }
             @if (task().Tags!.length > 3) {
-              <span class="inline-flex items-center px-2 py-1 text-xs text-slate-500">
+              <span class="inline-flex items-center px-2 py-1 rounded-full text-xs bg-muted text-muted-foreground">
                 +{{ task().Tags!.length - 3 }}
               </span>
             }
@@ -68,19 +68,19 @@ import { Router, RouterLink } from '@angular/router';
 
         @if (totalSubtasks()) {
           <div class="flex flex-row items-center gap-2">
-            <div class="flex-1 bg-slate-200 rounded-full h-1">
+            <div class="flex-1 bg-muted-foreground/30 rounded-full h-1">
               <div
                 [ngStyle]="subTaskStyles()"
                 class="bg-primary h-full rounded-full transition-all"
               ></div>
             </div>
-            <span class="text-xs text-slate-600">
+            <span class="text-xs text-muted-foreground">
               {{ completedSubtasks() }}/{{ totalSubtasks() }}
             </span>
           </div>
         }
 
-        <div class="flex items-center justify-between text-xs text-slate-500">
+        <div class="flex items-center justify-between text-xs text-muted-foreground">
           <div class="flex items-center">
             {{ CALENDER }} {{ task().createdDate | dateFormatter }}
           </div>

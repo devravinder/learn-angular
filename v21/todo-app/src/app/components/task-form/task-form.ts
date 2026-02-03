@@ -72,36 +72,36 @@ const convertSubtasksToMarkdown = (subTasks?: SubTask[]): string[] => {
       <div class="space-y-6">
         <!-- Title -->
         <div>
-          <label for="title" class="block text-sm font-medium text-slate-700 mb-2">Title</label>
+          <label for="title" class="block text-sm font-medium text-foreground/80 mb-2">Title</label>
           <input
             id="title"
             [formField]="taskForm.Title"
             type="text"
-            class="w-full px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+            class="w-full px-3 py-2 border border-muted-foreground/30 rounded-md focus:outline-none focus:ring-2 focus:ring-primary/70 focus:border-transparent"
             placeholder="Task title"
           />
         </div>
 
         <!-- Description -->
         <div>
-          <label for="description" class="block text-sm font-medium text-slate-700 mb-2"
+          <label for="description" class="block text-sm font-medium text-foreground/80 mb-2"
             >Description</label
           >
           <textarea
             id="description"
             [formField]="taskForm.Description"
             rows="3"
-            class="w-full px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+            class="w-full px-3 py-2 border border-muted-foreground/30 rounded-md focus:outline-none focus:ring-2 focus:ring-primary/70 focus:border-transparent"
           ></textarea>
         </div>
 
         <!-- Grid: Priority, Category, AssignedTo, Due Date -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label class="block text-sm font-medium text-slate-700 mb-2">Priority</label>
+            <label class="block text-sm font-medium text-foreground/80 mb-2">Priority</label>
             <select
               [formField]="taskForm.Priority"
-              class="w-full px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+              class="w-full px-3 py-2 border border-muted-foreground/30 rounded-md focus:outline-none focus:ring-2 focus:ring-primary/70 focus:border-transparent"
             >
               @for (p of priorities(); track p) {
                 <option [value]="p">{{ p }}</option>
@@ -110,10 +110,10 @@ const convertSubtasksToMarkdown = (subTasks?: SubTask[]): string[] => {
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-slate-700 mb-2">Category</label>
+            <label class="block text-sm font-medium text-foreground/80 mb-2">Category</label>
             <select
               [formField]="taskForm.Category"
-              class="w-full px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+              class="w-full px-3 py-2 border border-muted-foreground/30 rounded-md focus:outline-none focus:ring-2 focus:ring-primary/70 focus:border-transparent"
             >
               <option value="">Unassigned</option>
               @for (c of categories(); track c) {
@@ -123,10 +123,10 @@ const convertSubtasksToMarkdown = (subTasks?: SubTask[]): string[] => {
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-slate-700 mb-2">Assigned To</label>
+            <label class="block text-sm font-medium text-foreground/80 mb-2">Assigned To</label>
             <select
               [formField]="taskForm.AssignedTo"
-              class="w-full px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+              class="w-full px-3 py-2 border border-muted-foreground/30 rounded-md focus:outline-none focus:ring-2 focus:ring-primary/70 focus:border-transparent"
             >
               <option value="">Unassigned</option>
               @for (u of users(); track u) {
@@ -136,21 +136,21 @@ const convertSubtasksToMarkdown = (subTasks?: SubTask[]): string[] => {
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-slate-700 mb-2">Due Date</label>
+            <label class="block text-sm font-medium text-foreground/80 mb-2">Due Date</label>
             <input
               [formField]="taskForm.dueDate"
               type="date"
-              class="w-full px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+              class="w-full px-3 py-2 border border-muted-foreground/30 rounded-md focus:outline-none focus:ring-2 focus:ring-primary/70 focus:border-transparent"
             />
           </div>
         </div>
 
         <!-- Status -->
         <div>
-          <label class="block text-sm font-medium text-slate-700 mb-2">Status</label>
+          <label class="block text-sm font-medium text-foreground/80 mb-2">Status</label>
           <select
             [formField]="taskForm.Status"
-            class="w-full px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+            class="w-full px-3 py-2 border border-muted-foreground/30 rounded-md focus:outline-none focus:ring-2 focus:ring-primary/70 focus:border-transparent"
           >
             @for (s of statuses(); track s) {
               <option [value]="s">{{ s }}</option>
@@ -160,7 +160,7 @@ const convertSubtasksToMarkdown = (subTasks?: SubTask[]): string[] => {
 
         <!-- Tags (multi-select toggle buttons) -->
         <div>
-          <label class="block text-sm font-medium text-slate-700 mb-2">Tags</label>
+          <label class="block text-sm font-medium text-foreground/80 mb-2">Tags</label>
           <div class="flex flex-wrap gap-2">
             @for (tag of tags(); track tag) {
               <button
@@ -169,7 +169,7 @@ const convertSubtasksToMarkdown = (subTasks?: SubTask[]): string[] => {
                 [ngClass]="
                   formData().Tags.includes(tag)
                     ? 'bg-indigo-100 border-indigo-300 text-indigo-700'
-                    : ' bg-slate-50 border-slate-300 text-slate-600 hover:bg-slate-100'
+                    : ' bg-slate-50 border-muted-foreground/30 text-slate-600 hover:bg-slate-100'
                 "
                 class="px-3 py-1 text-sm rounded-full border transition-colors"
               >
@@ -182,11 +182,11 @@ const convertSubtasksToMarkdown = (subTasks?: SubTask[]): string[] => {
         <!-- Subtasks -->
         <div>
           <div class="flex items-center justify-between mb-3">
-            <label class="block text-sm font-medium text-slate-700">Subtasks</label>
+            <label class="block text-sm font-medium text-foreground/80">Subtasks</label>
             <button
               type="button"
               (click)="addSubtask()"
-              class="inline-flex items-center px-3 py-1 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              class="inline-flex items-center px-3 py-1 text-sm bg-primary text-white rounded-md hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary/70"
             >
               {{ ADD }} Add Subtask
             </button>
@@ -197,8 +197,8 @@ const convertSubtasksToMarkdown = (subTasks?: SubTask[]): string[] => {
                 <button
                   (click)="toggleSubtask(i)"
                   type="button"
-                  class="w-5 h-5 rounded border-2 flex items-center justify-center border-slate-300"
-                  [ngClass]="subtask.completed ? 'text-blue-600' : 'hover:border-blue-600'"
+                  class="w-5 h-5 rounded border-2 flex items-center justify-center border-muted-foreground/30"
+                  [ngClass]="subtask.completed ? 'text-primary' : 'hover:border-primary'"
                 >
                   <!-- all are same => subtask = formData().Subtasks[i] = taskForm.Subtasks().value()[i] -->
                   @if (subtask.completed) {
@@ -209,12 +209,12 @@ const convertSubtasksToMarkdown = (subTasks?: SubTask[]): string[] => {
                   type="text"
                   [formField]="taskForm.Subtasks[i].text"
                   placeholder="Enter subtask..."
-                  class="flex-1 px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+                  class="flex-1 px-3 py-2 border border-muted-foreground/30 rounded-md focus:outline-none focus:ring-2 focus:ring-primary/70 focus:border-transparent"
                 />
                 <button
                   (click)="removeSubtask(i)"
                   type="button"
-                  class="text-slate-400 hover:text-red-600"
+                  class="text-slate-400 text-xl hover:text-red-600"
                 >
                   {{ CLOSE }}
                 </button>
@@ -225,12 +225,12 @@ const convertSubtasksToMarkdown = (subTasks?: SubTask[]): string[] => {
 
         <!-- Notes -->
         <div>
-          <label for="notes" class="block text-sm font-medium text-slate-700 mb-2">Notes</label>
+          <label for="notes" class="block text-sm font-medium text-foreground/80 mb-2">Notes</label>
           <textarea
             id="notes"
             [formField]="taskForm.Notes"
             rows="4"
-            class="w-full px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+            class="w-full px-3 py-2 border border-muted-foreground/30 rounded-md focus:outline-none focus:ring-2 focus:ring-primary/70 focus:border-transparent"
           ></textarea>
         </div>
 
@@ -249,7 +249,7 @@ const convertSubtasksToMarkdown = (subTasks?: SubTask[]): string[] => {
             <button
               type="button"
               (click)="onCancel.emit()"
-              class="px-4 py-2 bg-slate-200 text-slate-700 rounded-md hover:bg-slate-300"
+              class="px-4 py-2 bg-secondary-dark text-foreground/80 rounded-md hover:bg-secondary-darker"
             >
               Cancel
             </button>
@@ -259,14 +259,14 @@ const convertSubtasksToMarkdown = (subTasks?: SubTask[]): string[] => {
             <button
               type="button"
               (click)="onReset()"
-              class="px-4 py-2 bg-slate-200 text-slate-700 rounded-md hover:bg-slate-300"
+              class="px-4 py-2 bg-secondary-dark text-foreground/80 rounded-md hover:bg-secondary-darker"
             >
               Reset
             </button>
             <button
               type="submit"
               (click)="onSubmitInternal()"
-              class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50"
+              class="px-4 py-2  text-accent rounded-md bg-primary hover:bg-primary-dark disabled:opacity-50"
             >
               Save
             </button>
