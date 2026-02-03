@@ -36,7 +36,7 @@ export const taskResolver: ResolveFn<Task> = (
   selector: 'app-task-details',
   imports: [Modal, TaskForm],
   template: `
-    <app-modal [isOpen]="true" (onClose)="goToParent()" title="Test" class="absolute">
+    <app-modal [isOpen]="true" (onClose)="goToParent()" title="Edit Task" class="absolute">
       <app-task-form [data]="task()" (onCancel)="goToParent()" (onSubmit)="onSubmit($event)" />
     </app-modal>
   `,

@@ -6,7 +6,6 @@ import { ConfigService } from '../../services/config/config.service';
 import { TaskService } from '../../services/tasks/task.service';
 import { sortDsc } from '../../util/common';
 import { RouterOutlet } from '@angular/router';
-import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-dashboard',

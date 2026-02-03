@@ -28,7 +28,7 @@ import { TaskCard } from '../task-card/task-card';
       @if (!tasks()?.length) {
         <div class="text-center py-8 text-muted-foreground">
           <p class="text-sm">No tasks yet</p>
-          <button class="text-blue-600 hover:text-blue-700 text-sm mt-1">
+          <button (click)="onAddClick.emit(title())" class="text-primary hover:text-primary-dark text-sm mt-1">
             Add your first task
           </button>
         </div>
