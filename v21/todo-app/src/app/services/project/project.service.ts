@@ -40,6 +40,10 @@ export class ProjectService {
     return db.projects.orderBy('lastAccessed').reverse().first();
   }
 
+  async getProjects(){
+    return db.projects.orderBy('lastAccessed').toArray()
+  }
+
   switchActiveProject = async (project: Project) => {
     project.lastAccessed = new Date().getTime();
     this.activeProject.set(project);

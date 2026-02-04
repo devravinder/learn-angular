@@ -21,7 +21,7 @@ import { Button } from '../button/button';
 
       <div class="flex items-center space-x-2">
         <app-button-primary [routerLink]="['', NEW]" [label]="ADD + ' New Task'" />
-        <app-button routerLink="settings" [label]="FOLDER" />
+        <app-button [routerLink]="['', 'projects']" [label]="FOLDER" />
         <app-button [routerLink]="['', 'archive']" [label]="ARCHIVE" />
         <app-button [routerLink]="['', 'settings']" [label]="SETTINGS" />
         <app-button

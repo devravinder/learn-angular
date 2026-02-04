@@ -3,6 +3,7 @@ import { taskResolver } from './pages/dashboard/task-details/task-details';
 import { archiveTasksResolver } from './pages/dashboard/archive/archive';
 import Layout from './components/layout/layout';
 import { activeProjectGuard } from './guards/active-project-guard';
+import { projectResolver } from './pages/dashboard/projects/projects';
 
 export const routes: Routes = [
   {
@@ -37,6 +38,12 @@ export const routes: Routes = [
         path: 'archive',
         resolve: { data: archiveTasksResolver },
         loadComponent: () => import('./pages/dashboard/archive/archive'),
+      },
+      {
+        path: 'projects',
+        title: 'Projects',
+        resolve: { formData: projectResolver },
+        loadComponent: () => import('./pages/dashboard/projects/projects'),
       },
       {
         path: ':id',

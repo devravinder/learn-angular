@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
 import { KanbanColumn } from '../../components/kanban-column/kanban-column';
 import { TaskService } from '../../services/tasks/task.service';
