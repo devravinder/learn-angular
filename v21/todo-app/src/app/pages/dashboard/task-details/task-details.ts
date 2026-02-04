@@ -20,7 +20,8 @@ export const taskResolver: ResolveFn<Task> = (
   const router = inject(Router);
   const taskService = inject(TaskService);
   const taskId = route.paramMap.get('id')!;
-  const task = taskId === NEW ? taskService.getSampleNewTask() : taskService.getTask(taskId);
+  const status = route.queryParamMap.get('status')
+  const task = taskId === NEW ? taskService.getSampleNewTask(status!) : taskService.getTask(taskId);
   if (task) {
     return task;
   }

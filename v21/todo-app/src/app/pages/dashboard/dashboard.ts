@@ -1,14 +1,13 @@
 import { Component, computed, inject, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Router, RouterOutlet } from '@angular/router';
 import { KanbanColumn } from '../../components/kanban-column/kanban-column';
-import { Modal } from '../../components/modal/modal';
-import { TaskForm } from '../../components/task-form/task-form';
 import { TaskService } from '../../services/tasks/task.service';
 import { sortDsc } from '../../util/common';
+import { NEW } from '../../util/constants';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [KanbanColumn, Modal, TaskForm, RouterOutlet],
+  imports: [KanbanColumn, RouterOutlet],
   template: `
     @for (group of groups(); track group) {
       <app-kanban-column
@@ -17,16 +16,6 @@ import { sortDsc } from '../../util/common';
         (onAddClick)="onAddClick($event)"
         class="flex flex-col h-fit shrink-0 w-80 rounded-lg border border-border"
       />
-    }
-    @if (showModal()) {
-      <app-modal
-        [isOpen]="showModal()"
-        (onClose)="toggleModal()"
-        title="Create Task"
-        class="absolute"
-      >
-        <app-task-form [data]="task()!" (onCancel)="toggleModal()" (onSubmit)="onSubmit($event)" />
-      </app-modal>
     }
     <router-outlet />
   `,
@@ -41,9 +30,7 @@ import { sortDsc } from '../../util/common';
 })
 export class Dashboard {
   taskService = inject(TaskService);
-  showModal = signal<boolean>(false);
-
-  task = signal<Task | null>(null);
+  router = inject(Router);
 
   groups = computed(() => {
     const ARCHIVE = this.taskService.config()['Workflow Statuses']['ARCHIVE_STATUS'];
@@ -69,18 +56,8 @@ export class Dashboard {
       ),
   );
 
-  toggleModal() {
-    this.showModal.set(!this.showModal());
-  }
-
-  onSubmit(task: Task) {
-    this.taskService.addTask(task);
-    this.toggleModal();
-  }
-
   onAddClick(status: string) {
-    this.task.set(this.taskService.getSampleNewTask(status));
-    this.toggleModal();
+    this.router.navigate(['', NEW], { queryParams: { status } });
   }
 }
 

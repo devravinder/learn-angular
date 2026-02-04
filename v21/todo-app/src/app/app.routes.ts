@@ -38,7 +38,6 @@ export const routes: Routes = [
         resolve: { data: archiveTasksResolver },
         loadComponent: () => import('./pages/dashboard/archive/archive'),
       },
-
       {
         path: ':id',
         resolve: { task: taskResolver },
