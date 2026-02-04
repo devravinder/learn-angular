@@ -37,7 +37,7 @@ export const taskResolver: ResolveFn<Task> = (
   imports: [Modal, TaskForm],
   template: `
     <app-modal [isOpen]="true" (onClose)="goToParent()" title="Edit Task" class="absolute">
-      <app-task-form [data]="task()" (onCancel)="goToParent()" (onSubmit)="onSubmit($event)" />
+      <app-task-form [data]="task()" (onCancel)="goToParent()" (onSubmit)="onSubmit($event)" (onDelete)="onDelete($event)" />
     </app-modal>
   `,
   styles: ``,
@@ -57,9 +57,13 @@ export class TaskDetails {
   }
 
   onSubmit(task: Task) {
-    this.taskService.addTask(task);
-
+    this.taskService.editTask(task.Id!, task);
     this.goToParent();
+  }
+
+  onDelete(id: string){
+    this.taskService.deleteTask(id)
+    this.goToParent()
   }
 }
 

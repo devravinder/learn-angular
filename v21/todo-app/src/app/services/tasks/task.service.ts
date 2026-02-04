@@ -1,7 +1,8 @@
-import { inject, Injectable, signal } from '@angular/core';
+import { effect, inject, Injectable, signal } from '@angular/core';
 import { getId } from '../../util/common';
-import { defaultTasks } from '../../util/data';
-import { ConfigService } from '../config/config.service';
+import { defaultConfig } from '../../util/constants';
+import { ProjectService } from '../project/project.service';
+import { readFromStore, writeToStore } from '../../util/syncStore';
 
 const SideEffectKey: Partial<{
   [K in keyof TodoConfig]: keyof Task | undefined;
@@ -16,17 +17,48 @@ const SideEffectKey: Partial<{
   providedIn: 'root',
 })
 export class TaskService {
-  tasks = signal<Task[]>(defaultTasks);
-  configService = inject(ConfigService);
+  projectService = inject(ProjectService);
+  tasks = signal<Task[]>([]);
+  config = signal<TodoConfig>(defaultConfig);
+
+  constructor() {
+    effect(() => {
+      this.onActiveProjectChange(this.projectService.activeProject());
+    });
+    effect(() => {
+      this.onDataChange(this.tasks(), this.config());
+    });
+  }
+
+  private async onActiveProjectChange(project?: Project) {
+    if (project) await this.readProjectData(project);
+  }
+
+  private async onDataChange(tasks: Task[], config: TodoConfig) {
+    const activeProject = this.projectService.activeProject();
+    if (activeProject && tasks.length) {
+      await writeToStore(tasks, config, activeProject?.fileHandle, activeProject?.type);
+    }
+  }
+
+  readProjectData = async (project: Project) => {
+    const result = await readFromStore(project.fileHandle, project.type);
+    if ('data' in result) {
+      const { tasks, config } = result.data;
+      this.tasks.set(tasks);
+      this.config.set(config);
+    } else {
+      this.projectService.onProjectFileError(result.error, project);
+    }
+  };
 
   getSampleNewTask = (status?: string): Task => {
     return {
       Title: '',
-      Status: status || this.configService.config()['Workflow Statuses']['CREATE_STATUS'],
+      Status: status || this.config()['Workflow Statuses']['CREATE_STATUS'],
       Description: '',
       Notes: '',
-      Priority:
-        this.configService.config().Priorities[this.configService.config().Priorities.length - 1],
+      Priority: this.config().Priorities[this.config().Priorities.length - 1],
       createdDate: new Date(),
       dueDate: new Date(),
       lastModifiedDate: new Date(),
@@ -56,12 +88,12 @@ export class TaskService {
       // Update timestamps based on status
       if (targetStatus !== currentStatus) {
         switch (targetStatus) {
-          case this.configService.config()['Workflow Statuses']['START_STATUS']: {
+          case this.config()['Workflow Statuses']['START_STATUS']: {
             task.startedDate = new Date();
             break;
           }
 
-          case this.configService.config()['Workflow Statuses']['END_STATUS']: {
+          case this.config()['Workflow Statuses']['END_STATUS']: {
             task.completedDate = new Date();
             break;
           }

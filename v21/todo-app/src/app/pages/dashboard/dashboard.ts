@@ -1,11 +1,10 @@
-import { Component, computed, effect, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
 import { KanbanColumn } from '../../components/kanban-column/kanban-column';
 import { Modal } from '../../components/modal/modal';
 import { TaskForm } from '../../components/task-form/task-form';
-import { ConfigService } from '../../services/config/config.service';
 import { TaskService } from '../../services/tasks/task.service';
 import { sortDsc } from '../../util/common';
-import { RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-dashboard',
@@ -42,16 +41,13 @@ import { RouterOutlet } from '@angular/router';
 })
 export class Dashboard {
   taskService = inject(TaskService);
-
-  configService = inject(ConfigService);
-
   showModal = signal<boolean>(false);
 
   task = signal<Task | null>(null);
 
   groups = computed(() => {
-    const ARCHIVE = this.configService.config()['Workflow Statuses']['ARCHIVE_STATUS'];
-    return this.configService.config().Statuses.filter((status) => status != ARCHIVE);
+    const ARCHIVE = this.taskService.config()['Workflow Statuses']['ARCHIVE_STATUS'];
+    return this.taskService.config().Statuses.filter((status) => status != ARCHIVE);
   });
 
   tasks = computed(() => this.taskService.tasks());
@@ -85,12 +81,6 @@ export class Dashboard {
   onAddClick(status: string) {
     this.task.set(this.taskService.getSampleNewTask(status));
     this.toggleModal();
-  }
-
-  constructor() {
-    effect(() => {
-      console.log({ tasks: this.tasks(), 'Grouped tasks:': this.groupedTasks() });
-    });
   }
 }
 

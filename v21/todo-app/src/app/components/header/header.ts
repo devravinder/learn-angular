@@ -24,9 +24,12 @@ import { ThemeService } from '../../services/theme/theme.service';
       <div class="flex items-center space-x-2">
         <app-button-primary (onClick)="toggleModal()" [label]="ADD + ' New Task'" />
         <app-button routerLink="settings" [label]="FOLDER" />
-        <app-button [routerLink]="['','archive']" [label]="ARCHIVE" />
-        <app-button routerLink="settings" [label]="SETTINGS" />
-        <app-button (onClick)="themeService.toggleTheme()" [label]="themeService.theme() =='dark' ? SUN : MOON" />
+        <app-button [routerLink]="['', 'archive']" [label]="ARCHIVE" />
+        <app-button [routerLink]="['', 'settings']" [label]="SETTINGS" />
+        <app-button
+          (onClick)="themeService.toggleTheme()"
+          [label]="themeService.theme() == 'dark' ? SUN : MOON"
+        />
       </div>
 
       <app-modal
@@ -46,14 +49,14 @@ export class Header {
   FOLDER = FOLDER;
   ARCHIVE = ARCHIVE;
   SETTINGS = SETTINGS;
-  SUN = SUN
-  MOON = MOON
+  SUN = SUN;
+  MOON = MOON;
 
   private router = inject(Router);
 
   taskService = inject(TaskService);
 
-  themeService = inject(ThemeService)
+  themeService = inject(ThemeService);
 
   showModal = signal<boolean>(false);
 

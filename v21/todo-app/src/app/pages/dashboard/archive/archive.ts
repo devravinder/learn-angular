@@ -1,15 +1,13 @@
 import { Component, computed, inject } from '@angular/core';
-import { ActivatedRoute, ResolveFn, Router } from '@angular/router';
-import { ConfigService } from '../../../services/config/config.service';
-import { TaskService } from '../../../services/tasks/task.service';
-import { Modal } from '../../../components/modal/modal';
-import { KanbanColumn } from '../../../components/kanban-column/kanban-column';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { ActivatedRoute, ResolveFn, Router } from '@angular/router';
+import { KanbanColumn } from '../../../components/kanban-column/kanban-column';
+import { Modal } from '../../../components/modal/modal';
+import { TaskService } from '../../../services/tasks/task.service';
 
 export const archiveTasksResolver: ResolveFn<{ tasks: Task[]; status: string }> = () => {
-  const configService = inject(ConfigService);
   const taskService = inject(TaskService);
-  const status = configService.config()['Workflow Statuses']['ARCHIVE_STATUS'];
+  const status = taskService.config()['Workflow Statuses']['ARCHIVE_STATUS'];
   return { tasks: taskService.getTasksByStatus(status), status };
 };
 

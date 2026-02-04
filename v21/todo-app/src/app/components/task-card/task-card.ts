@@ -1,9 +1,9 @@
-import { Component, computed, inject, input } from '@angular/core';
-import { CALENDER, CLOCK, EDIT, USER } from '../../util/icons';
-import { DateFormatterPipe } from '../../pipes/date-formatter/date-formatter-pipe';
 import { NgStyle } from '@angular/common';
-import { ConfigService } from '../../services/config/config.service';
+import { Component, computed, inject, input } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
+import { DateFormatterPipe } from '../../pipes/date-formatter/date-formatter-pipe';
+import { TaskService } from '../../services/tasks/task.service';
+import { CALENDER, CLOCK, EDIT, USER } from '../../util/icons';
 
 @Component({
   selector: 'app-task-card',
@@ -50,7 +50,7 @@ import { Router, RouterLink } from '@angular/router';
             </span>
           }
 
-          @if (task().Tags) {
+          @if (task().Tags && Array.isArray(task().Tags)) {
             @for (tag of task().Tags!.slice(0, 3); track tag) {
               <span
                 class="inline-flex items-center px-2 py-1 text-xs bg-indigo-100 text-indigo-700 rounded"
@@ -97,12 +97,14 @@ import { Router, RouterLink } from '@angular/router';
 })
 export class TaskCard {
   router = inject(Router);
-  configService = inject(ConfigService);
+  taskService = inject(TaskService);
   task = input.required<Task>();
   USER = USER;
   CALENDER = CALENDER;
   CLOCK = CLOCK;
   EDIT = EDIT;
+
+  Array = Array
 
   totalSubtasks = computed(() => this.task().Subtasks?.length || 0);
   completedSubtasks = computed(() =>
@@ -119,7 +121,7 @@ export class TaskCard {
 
   taskPriorityStyles = computed(() => ({
     backgroundColor:
-      this.configService.config()['Priority Colors'][this.task().Priority]?.['bg-color'],
-    color: this.configService.config()['Priority Colors'][this.task().Priority]?.['text-color'],
+      this.taskService.config()['Priority Colors'][this.task().Priority]?.['bg-color'],
+    color: this.taskService.config()['Priority Colors'][this.task().Priority]?.['text-color'],
   }));
 }

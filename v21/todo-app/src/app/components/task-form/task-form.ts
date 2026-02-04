@@ -2,7 +2,7 @@ import { NgClass } from '@angular/common';
 import { Component, computed, inject, input, linkedSignal, output } from '@angular/core';
 import { form, FormField } from '@angular/forms/signals';
 import dayjs from 'dayjs';
-import { ConfigService } from '../../services/config/config.service';
+import { TaskService } from '../../services/tasks/task.service';
 import { FORM_DATE_FORMAT } from '../../util/constants';
 import { ADD, CHECK, CLOSE } from '../../util/icons';
 
@@ -240,7 +240,7 @@ const convertSubtasksToMarkdown = (subTasks?: SubTask[]): string[] => {
             @if (isEdit()) {
               <button
                 type="button"
-                (click)="onDelete.emit()"
+                (click)="onDelete.emit(data().Id!)"
                 class="px-4 py-2 text-red-500 bg-red-100 rounded-lg hover:bg-red-200"
               >
                 Delete
@@ -281,7 +281,7 @@ export class TaskForm {
   ADD = ADD;
   CHECK = CHECK;
   CLOSE = CLOSE;
-  configService = inject(ConfigService);
+  taskService = inject(TaskService);
 
   readonly data = input.required<Task>();
   readonly formData = linkedSignal({
@@ -293,14 +293,14 @@ export class TaskForm {
 
   onSubmit = output<Task>();
   onCancel = output<void>();
-  onDelete = output<void>();
+  onDelete = output<string>();
 
   // Config signals (could come from service)
-  priorities = computed(() => this.configService.config().Priorities);
-  categories = computed(() => this.configService.config().Categories);
-  statuses = computed(() => this.configService.config().Statuses);
-  users = computed(() => this.configService.config().Users);
-  tags = computed(() => this.configService.config().Tags);
+  priorities = computed(() => this.taskService.config().Priorities);
+  categories = computed(() => this.taskService.config().Categories);
+  statuses = computed(() => this.taskService.config().Statuses);
+  users = computed(() => this.taskService.config().Users);
+  tags = computed(() => this.taskService.config().Tags);
 
   isEdit = computed(() => this.data().Id);
 

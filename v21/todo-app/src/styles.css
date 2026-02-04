@@ -162,6 +162,11 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  /* fix for select options */
+  option {
+    @apply text-foreground bg-muted
+  }
 }
 
 

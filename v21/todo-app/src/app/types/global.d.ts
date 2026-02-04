@@ -1,3 +1,7 @@
+import { ID_TITLE_DELIMETER, TASKS_KEY, CONFIG_KEY } from "../util/constants";
+
+type ID_TITLE_DELIMETER = typeof ID_TITLE_DELIMETER;
+
 declare global {
   interface Window {
     showDirectoryPicker(options?: {
@@ -9,6 +13,49 @@ declare global {
 
   interface FileSystemDirectoryHandle {
     entries(): AsyncIterableIterator<[string, FileSystemHandle]>;
+  }
+
+  interface FileError {
+    name: 'AbortError' | 'NotFoundError' | 'BrowserNotSupports' | 'NotAllowedError';
+    message: string;
+  }
+
+  type FileHandleResult =
+    | {
+        handle: FileSystemFileHandle;
+        path: string;
+      }
+    | { error: FileError };
+
+  type FileReadResult =
+    | {
+        data: AppData;
+      }
+    | { error: FileError };
+
+  type StoreTasks = Record<
+    string,
+    Record<`${Task['Id']}${ID_TITLE_DELIMETER}${Task['Title']}`, Task>
+  >;
+
+  type StoreData = {
+    Todo: {
+      [TASKS_KEY]: StoreTasks;
+      [CONFIG_KEY]: TodoConfig;
+    };
+  };
+
+  type AppData = { tasks: Task[]; config: TodoConfig };
+
+  interface Project {
+    id: string;
+    name: string;
+    fileHandle: FileSystemFileHandle;
+    lastAccessed: number;
+    env: 'CLOUD' | 'LOCAL';
+    type: FileFormat;
+    sessionId?: string;
+    path?: string;
   }
   interface Task {
     Id?: string;
