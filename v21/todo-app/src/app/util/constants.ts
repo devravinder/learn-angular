@@ -60,7 +60,7 @@ export const fileErrorMessages: { [Key in FileError['name']]: string } = {
 };
 
 export const DB_NAME = 'todo';
-
+export const NEW = 'new'
 export const ID_TITLE_DELIMETER = ' | ' as const;
 export const CONFIG_KEY = '⚙️ Configuration';
 export const TASKS_KEY = '📋 Tasks';

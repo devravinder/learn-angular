@@ -11,6 +11,7 @@ import {
 } from '@angular/router';
 import { TaskService } from '../../../services/tasks/task.service';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { NEW } from '../../../util/constants';
 
 export const taskResolver: ResolveFn<Task> = (
   route: ActivatedRouteSnapshot,
@@ -19,7 +20,7 @@ export const taskResolver: ResolveFn<Task> = (
   const router = inject(Router);
   const taskService = inject(TaskService);
   const taskId = route.paramMap.get('id')!;
-  const task = taskService.getTask(taskId);
+  const task = taskId === NEW ? taskService.getSampleNewTask() : taskService.getTask(taskId);
   if (task) {
     return task;
   }
@@ -37,7 +38,12 @@ export const taskResolver: ResolveFn<Task> = (
   imports: [Modal, TaskForm],
   template: `
     <app-modal [isOpen]="true" (onClose)="goToParent()" title="Edit Task" class="absolute">
-      <app-task-form [data]="task()" (onCancel)="goToParent()" (onSubmit)="onSubmit($event)" (onDelete)="onDelete($event)" />
+      <app-task-form
+        [data]="task()"
+        (onCancel)="goToParent()"
+        (onSubmit)="onSubmit($event)"
+        (onDelete)="onDelete($event)"
+      />
     </app-modal>
   `,
   styles: ``,
@@ -61,9 +67,9 @@ export class TaskDetails {
     this.goToParent();
   }
 
-  onDelete(id: string){
-    this.taskService.deleteTask(id)
-    this.goToParent()
+  onDelete(id: string) {
+    this.taskService.deleteTask(id);
+    this.goToParent();
   }
 }
 

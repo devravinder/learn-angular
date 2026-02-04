@@ -1,15 +1,13 @@
-import { Component, computed, inject, signal } from '@angular/core';
-import { Button } from '../button/button';
-import { ButtonPrimary } from '../button-primary/button-primary';
-import { FOLDER, ARCHIVE, SETTINGS, ADD, SUN, MOON } from '../../util/icons';
+import { Component, inject } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
-import { Modal } from '../modal/modal';
-import { TaskForm } from '../task-form/task-form';
-import { TaskService } from '../../services/tasks/task.service';
 import { ThemeService } from '../../services/theme/theme.service';
+import { NEW } from '../../util/constants';
+import { ADD, ARCHIVE, FOLDER, MOON, SETTINGS, SUN } from '../../util/icons';
+import { ButtonPrimary } from '../button-primary/button-primary';
+import { Button } from '../button/button';
 @Component({
   selector: 'app-header',
-  imports: [Button, ButtonPrimary, RouterLink, Modal, TaskForm],
+  imports: [Button, ButtonPrimary, RouterLink],
   template: `
     <div class="max-w-7xl mx-auto flex flex-row items-center justify-between">
       <div (click)="navigateToHome()" class="flex items-center space-x-3 cursor-pointer">
@@ -22,7 +20,7 @@ import { ThemeService } from '../../services/theme/theme.service';
       </div>
 
       <div class="flex items-center space-x-2">
-        <app-button-primary (onClick)="toggleModal()" [label]="ADD + ' New Task'" />
+        <app-button-primary [routerLink]="['', NEW]" [label]="ADD + ' New Task'" />
         <app-button routerLink="settings" [label]="FOLDER" />
         <app-button [routerLink]="['', 'archive']" [label]="ARCHIVE" />
         <app-button [routerLink]="['', 'settings']" [label]="SETTINGS" />
@@ -31,15 +29,6 @@ import { ThemeService } from '../../services/theme/theme.service';
           [label]="themeService.theme() == 'dark' ? SUN : MOON"
         />
       </div>
-
-      <app-modal
-        [isOpen]="showModal()"
-        (onClose)="toggleModal()"
-        title="Create Task"
-        class="absolute"
-      >
-        <app-task-form [data]="task()" (onCancel)="toggleModal()" (onSubmit)="onSubmit($event)" />
-      </app-modal>
     </div>
   `,
   styles: ``,
@@ -51,27 +40,13 @@ export class Header {
   SETTINGS = SETTINGS;
   SUN = SUN;
   MOON = MOON;
+  NEW = NEW
 
   private router = inject(Router);
 
-  taskService = inject(TaskService);
-
   themeService = inject(ThemeService);
-
-  showModal = signal<boolean>(false);
-
-  task = computed(() => this.taskService.getSampleNewTask());
 
   navigateToHome() {
     this.router.navigate(['/']);
-  }
-
-  toggleModal() {
-    this.showModal.set(!this.showModal());
-  }
-
-  onSubmit(task: Task) {
-    this.taskService.addTask(task);
-    this.toggleModal();
   }
 }
