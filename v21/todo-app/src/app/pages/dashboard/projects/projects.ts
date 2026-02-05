@@ -29,7 +29,7 @@ export const projectResolver: ResolveFn<ProjectFormData> = async(
   imports: [ProjectForm, Modal],
   template: `
     <app-modal [isOpen]="true" (onClose)="goToParent()" title="Manage Projects" class="absolute">
-      <app-project-form [data]="formData()" (onCancel)="goToParent()" />
+      <app-project-form [data]="formData()" (onCancel)="goToParent()" (onSave)="onSubmit($event)" />
     </app-modal>
   `,
   styles: ``,
@@ -47,7 +47,28 @@ export class Projects {
     this.router.navigate(['..'], { relativeTo: this.route });
   }
 
-  onSubmit(data: ProjectFormData) {
+  async onSubmit(data: ProjectFormData) {
+
+    const activeProject = this.projectService.activeProject()!
+
+    for (const project of data.projects) {
+      await this.projectService.updateProject(project);
+    }
+
+    if (data.activeProjectId !== activeProject.id) {
+      const newActiveProject = data.projects.find(
+        (p) => p.id === data.activeProjectId
+      );
+      this.projectService.switchActiveProject(newActiveProject!);
+    } else {
+      const isNameChanged = data.projects.findIndex(
+        (old) => old.id === activeProject.id && old.name !== activeProject.name
+      );
+      if (isNameChanged >= 0) {
+        this.projectService.switchActiveProject(data.projects[isNameChanged]);
+      }
+    }
+
     this.goToParent();
   }
 }

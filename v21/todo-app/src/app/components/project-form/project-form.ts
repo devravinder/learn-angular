@@ -2,6 +2,7 @@ import { Component, inject, input, linkedSignal, output, signal } from '@angular
 import { ProjectService } from '../../services/project/project.service';
 import { FileHandleService } from '../../services/util/file-handle/file-handle.service';
 import { form, FormField } from '@angular/forms/signals';
+import { ADD, MINUS } from '../../util/icons';
 
 export interface ProjectFormData {
   activeProjectId: string;
@@ -13,21 +14,18 @@ export interface ProjectFormData {
   imports: [FormField],
   template: `
     <!-- project-form.component.html -->
-    <form class="h-full flex flex-col justify-between">
-      <div class="flex">
-        <div class="flex-1 min-w-sm overflow-auto flex flex-col gap-4">
-          <div class="p-4 flex flex-col gap-4">
+    <div class="flex-1 h-full w-full flex flex-col justify-between">
+        <div class="flex-1 min-w-sm overflow-auto flex flex-col gap-4 p-4 px-3">
             <!-- Active Project Selection -->
-            <div class="flex">
-              <div class="w-full flex flex-col gap-4 px-2">
-                <label for="activeProjectId" class="block text-sm font-medium text-slate-700">
+              <div class="w-full flex flex-col gap-2 px-1">
+                <label for="activeProjectId" class="block text-sm font-medium text-foreground/80">
                   Active Project
                 </label>
-                <div class="w-full flex flex-row gap-2 pr-2">
+                <div class="w-full flex flex-row gap-2">
                   <select
                     id="activeProjectId"
                     [formField]="form.activeProjectId"
-                    class="grow px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+                    class="w-full px-3 py-2 border border-muted-foreground/30 rounded-md focus:outline-none focus:ring-2 focus:ring-primary/70 focus:border-transparent"
                   >
                     @for (project of formData().projects; track project.id) {
                       <option [value]="project.id">
@@ -40,17 +38,16 @@ export interface ProjectFormData {
                     (click)="onNewProjectClick()"
                     [disabled]="isOpening()"
                     type="button"
-                    class="px-4 py-2 bg-blue-600 cursor-pointer disabled:cursor-not-allowed text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-none"
+                    class="px-4 py-2 bg-primary cursor-pointer disabled:cursor-not-allowed text-accent-foreground rounded-lg hover:bg-primary-dark focus:outline-none focus:ring-none"
                   >
                     @if (isOpening()) {
-                      <span class="animate-spin inline-block">+</span>
+                      <span class="animate-spin inline-block">{{ADD}}</span>
                     } @else {
-                      <span>+</span>
+                      <span>{{ADD}}</span>
                     }
                   </button>
                 </div>
               </div>
-            </div>
 
             <!-- Error Message -->
             <div class="flex flex-row justify-center items-center">
@@ -63,46 +60,44 @@ export interface ProjectFormData {
 
             <!-- Projects List -->
             <div>
-              <label for="projects" class="block text-sm font-medium text-slate-700 p-2">
-                Projects
-              </label>
-
-              <div class="w-full flex flex-col gap-4 max-h-72 overflow-y-auto">
+              
+              <div class="w-full flex flex-col gap-1 max-h-72 overflow-y-auto">
+                <label for="projects" class="block text-sm font-medium text-foreground/80 px-1">
+                  Projects
+                </label>
                 @for (project of formData().projects; track project.id; let i = $index) {
-                  <div class="flex flex-row gap-2 p-2">
+                  <div class="flex flex-row gap-2 p-1">
                     <input
                       [formField]="form.projects[i].name"
                       type="text"
                       (keydown)="onKeyDown($event)"
-                      class="grow px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      class="w-full px-3 py-2 border border-muted-foreground/30 rounded-md focus:outline-none focus:ring-2 focus:ring-primary/70 focus:border-transparent"
                     />
                     <button
                       type="button"
                       [disabled]="isActiveProject(project.id)"
                       (click)="onDeleteProject(i)"
-                      class="cursor-pointer px-4 py-2 text-red-500 disabled:cursor-not-allowed disabled:bg-gray-300 bg-red-100 hover:bg-red-200 rounded-lg"
+                      class="cursor-pointer px-4 py-2 text-red-500 disabled:cursor-not-allowed disabled:bg-muted-foreground bg-red-200 hover:bg-red-300 rounded-lg"
                     >
-                      -
+                      {{MINUS}}
                     </button>
                   </div>
                 } @empty {
-                  <div class="text-center py-8 text-slate-400">
+                  <div class="text-center py-8 text-muted">
                     <p class="text-sm">No projects configured</p>
                   </div>
                 }
               </div>
             </div>
-          </div>
         </div>
-      </div>
 
       <!-- Form Actions -->
-      <div class="flex gap-4 py-4 px-4 items-end justify-between border-t border-slate-200">
+      <div class="flex gap-4 p-4 px-6 items-end justify-between border-t border-border">
         <div class="flex flex-row gap-4">
           <button
             type="button"
             (click)="handleCancel()"
-            class="cursor-pointer px-4 py-2 bg-slate-200 text-slate-700 rounded-md hover:bg-slate-300"
+            class="cursor-pointer px-4 py-2 bg-secondary-dark text-muted-foreground rounded-md hover:bg-secondary-darker"
           >
             Cancel
           </button>
@@ -111,23 +106,33 @@ export interface ProjectFormData {
           <button
             type="button"
             (click)="handleReset()"
-            class="cursor-pointer px-4 py-2 bg-slate-200 text-slate-700 rounded-md hover:bg-slate-300"
+            class="cursor-pointer px-4 py-2 bg-secondary-dark text-muted-foreground rounded-md hover:bg-secondary-darker"
           >
             Reset
           </button>
           <button
-            type="submit"
-            class="cursor-pointer px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+            type="button"
+            (click)="handleSubmit()"
+            class="cursor-pointer px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-dark"
           >
             Save
           </button>
         </div>
       </div>
-    </form>
+    </div>
   `,
-  styles: ``,
+   styles: [
+    `
+      :host {
+        display: contents;
+      }
+    `,
+  ],
 })
 export class ProjectForm {
+
+  ADD = ADD
+  MINUS = MINUS
   // Inputs/Outputs
   data = input.required<ProjectFormData>();
   readonly formData = linkedSignal(() => this.data());

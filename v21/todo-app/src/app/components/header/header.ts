@@ -1,10 +1,11 @@
-import { Component, inject } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { ThemeService } from '../../services/theme/theme.service';
 import { NEW } from '../../util/constants';
 import { ADD, ARCHIVE, FOLDER, MOON, SETTINGS, SUN } from '../../util/icons';
 import { ButtonPrimary } from '../button-primary/button-primary';
 import { Button } from '../button/button';
+import { ProjectService } from '../../services/project/project.service';
 @Component({
   selector: 'app-header',
   imports: [Button, ButtonPrimary, RouterLink],
@@ -16,7 +17,7 @@ import { Button } from '../button/button';
             <img src="./favicon.png" />
           </span>
         </div>
-        <h1 class="text-xl font-semibold text-foreground">Todo App</h1>
+        <h1 class="text-xl font-semibold text-foreground">{{projectName()}}</h1>
       </div>
 
       <div class="flex items-center space-x-2">
@@ -45,6 +46,8 @@ export class Header {
   private router = inject(Router);
 
   themeService = inject(ThemeService);
+  projectService = inject(ProjectService)
+  projectName = computed(()=> this.projectService.activeProject()?.name!)
 
   navigateToHome() {
     this.router.navigate(['/']);
