@@ -26,7 +26,6 @@ export const routes: Routes = [
     children: [
       {
         path: '',
-        resolve: { data: archiveTasksResolver },
         loadComponent: () => import('./pages/dashboard/dashboard'),
       },
       {

@@ -1,14 +1,17 @@
-import { Injectable, signal } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import db from '../../util/db';
+import { getId } from '../../util/common';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ProjectService {
   activeProject = signal<Project | undefined>(undefined);
+  router = inject(Router)
 
   getSampleNewProject = (fileHandle: FileSystemFileHandle, path: string) => {
-    const id = crypto.randomUUID().slice(0, 4);
+    const id = getId(4);
     const project: Project = {
       id,
       path,
@@ -54,6 +57,7 @@ export class ProjectService {
     console.log('error while reading ', error);
     if (project && (error?.name === 'NotFoundError' || error?.name === 'NotAllowedError')) {
       await this.deleteProject(project.id);
+      this.router.navigate(['welcome'])
     }
   };
 

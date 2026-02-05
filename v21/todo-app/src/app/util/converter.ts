@@ -1,5 +1,5 @@
 import dayjs from "dayjs";
-import { DB_DATE_FORMAT, ID_TITLE_DELIMETER, TASKS_KEY, CONFIG_KEY } from "./constants";
+import { DB_DATE_FORMAT, ID_TITLE_DELIMETER, TASKS_KEY, CONFIG_KEY, defaultConfig } from "./constants";
 
 type TaskNonStringKeys = NonStringKeys<Task>;
 
@@ -84,5 +84,5 @@ export const toAppData = (data: StoreData) => {
   }, nonSerialized);
 
   const tasks = nonSerialized.map(deSerializeTask);
-  return { tasks, config: data.Todo[CONFIG_KEY] };
+  return { tasks, config: data.Todo[CONFIG_KEY] || defaultConfig };
 };

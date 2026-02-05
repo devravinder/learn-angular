@@ -334,7 +334,6 @@ export class TaskForm {
 
   onSubmitInternal() {
     //  if (this.taskForm.invalid) return;
-
     const value = this.formData();
     const task = toData(value);
     this.onSubmit.emit(task);
