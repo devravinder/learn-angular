@@ -7,7 +7,6 @@ type PriorityColors = TodoConfig['Priority Colors'];
   selector: 'app-priority-colors-input',
   imports: [ColorInputGroup],
   template: `
-   <div class="flex flex-col gap-4 p-2">
      @for (key of keys(); track key) {
       <app-color-input-group
         [label]="key"
@@ -15,9 +14,14 @@ type PriorityColors = TodoConfig['Priority Colors'];
         (onChange)="onInputChange(key, $event)"
       />
     }
-   </div>
   `,
-  styles: ``,
+  styles: [
+    `
+      :host {
+        display: contents;
+      }
+    `,
+  ],
 })
 export class PriorityColorsInput {
   priorityColors = input.required<PriorityColors>();

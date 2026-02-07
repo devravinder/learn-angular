@@ -8,26 +8,31 @@ type WorkflowStatuses = TodoConfig['Workflow Statuses'];
   standalone: true,
   imports: [FormField],
   template: `
-    <div class="p-2 flex flex-col gap-4">
-      @for (key of keys(); track key) {
-        <div class="flex flex-col gap-2">
-          <label class="block text-sm font-medium text-foreground/80">{{ key }}</label>
+    @for (key of keys(); track key) {
+      <div class="flex flex-col gap-2">
+        <label class="block text-sm font-medium text-foreground/80">{{ key }}</label>
 
-          <select
-            [formField]="form[key]"
-            class="w-full px-3 py-2 border border-muted-foreground/30 rounded-md focus:outline-none focus:ring-2 focus:ring-primary/70 focus:border-transparent"
-          >
-            <option value="">Unassigned</option>
-            @for (status of statuses(); track status) {
-              <option [value]="status">{{ status }}</option>
-            }
-          </select>
-        </div>
-      } @empty {
-        <p class="text-sm text-muted-foreground italic p-4">No workflow statuses defined yet</p>
-      }
-    </div>
+        <select
+          [formField]="form[key]"
+          class="w-full px-3 py-2 border border-muted-foreground/30 rounded-md focus:outline-none focus:ring-2 focus:ring-primary/70 focus:border-transparent"
+        >
+          <option value="">Unassigned</option>
+          @for (status of statuses(); track status) {
+            <option [value]="status">{{ status }}</option>
+          }
+        </select>
+      </div>
+    } @empty {
+      <p class="text-sm text-muted-foreground italic p-4">No workflow statuses defined yet</p>
+    }
   `,
+  styles: [
+    `
+      :host {
+        display: contents;
+      }
+    `,
+  ],
 })
 export class WorkflowStatusInput {
   workFlow = input.required<WorkflowStatuses>();

@@ -34,7 +34,8 @@ type StringArrayKey = ArrayKeys<TodoConfig>;
         </div>
         <div class="flex-1 flex flex-col gap-2 p-4 overflow-auto">
           <h3 class="text-lg font-medium text-foreground px-2">Manage {{ activeTab() }}</h3>
-          @if (items().length) {
+          <div class="flex flex-col gap-4 overflow-auto max-h-92 p-2">
+            @if (items().length) {
             <app-string-array-input
               [items]="items()"
               (onChange)="onStringArrayChange(activeTab(), $event)"
@@ -54,6 +55,7 @@ type StringArrayKey = ArrayKeys<TodoConfig>;
              (onChange)="onPriorityColorChange($event)"
             />
           }
+          </div>
         </div>
       </div>
       <!-- Form Actions -->
@@ -99,7 +101,7 @@ export class SettingsForm {
   ADD = ADD;
   MINUS = MINUS;
   onCancel = output<void>();
-  onSave = output<{value: TodoConfig, sideEffects: Change[]}>();
+  onSave = output<TodoConfig>();
   data = input.required<TodoConfig>();
   readonly formData = linkedSignal(() => this.data());
   protected readonly form = form<TodoConfig>(this.formData);
@@ -140,7 +142,7 @@ export class SettingsForm {
   }
 
   handleSubmit() {
-    this.onSave.emit({value:this.formData(), sideEffects: this.sideEffects()});
+    this.onSave.emit(this.formData());
   }
   onTabClick = (tab: keyof TodoConfig) => {
     this.activeTab.set(tab as StringArrayKey);
