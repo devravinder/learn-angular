@@ -134,6 +134,7 @@ export class TaskService {
 
   onConfigChange = (value: TodoConfig, sideEffects: Change[]) => {
     this.handleSideEffects(sideEffects);
+    this.config.set(value)
   };
 
   getTask(id: string) {

@@ -11,7 +11,7 @@ type Color = {
   standalone: true,
   imports: [NgStyle],
   template: `
-    <div class="flex flex-col gap-2 items-center">
+    <div class="min-w-0 flex flex-col gap-2 items-center shrink-0">
       <span class="text-sm font-medium text-foreground">{{ label() }}</span>
 
       <div

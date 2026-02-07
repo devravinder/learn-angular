@@ -4,14 +4,13 @@ import { form } from '@angular/forms/signals';
 import { ADD, MINUS } from '../../util/icons';
 import { StringArrayInput } from '../string-array-input/string-array-input';
 import { WorkflowStatusInput } from '../workflow-status-input/workflow-status-input';
-import { ColorPicker } from '../color-picker/color-picker';
-import { ColorInputGroup } from '../color-input-group/color-input-group';
+import { PriorityColorsInput } from '../priority-colors-input/priority-colors-input';
 
 type StringArrayKey = ArrayKeys<TodoConfig>;
 
 @Component({
   selector: 'app-settings-form',
-  imports: [NgClass, StringArrayInput, WorkflowStatusInput, ColorInputGroup],
+  imports: [NgClass, StringArrayInput, WorkflowStatusInput, PriorityColorsInput],
   template: `
     <div class="w-full flex-1 flex flex-col">
       <div class="flex-1 flex flex-row w-full">
@@ -50,7 +49,10 @@ type StringArrayKey = ArrayKeys<TodoConfig>;
           }
 
           @if (activeTab() === 'Priority Colors') {
-            <app-color-input-group />
+            <app-priority-colors-input 
+             [priorityColors]="formData()['Priority Colors']"
+             (onChange)="onPriorityColorChange($event)"
+            />
           }
         </div>
       </div>
@@ -97,12 +99,27 @@ export class SettingsForm {
   ADD = ADD;
   MINUS = MINUS;
   onCancel = output<void>();
-  onSave = output<TodoConfig>();
+  onSave = output<{value: TodoConfig, sideEffects: Change[]}>();
   data = input.required<TodoConfig>();
   readonly formData = linkedSignal(() => this.data());
   protected readonly form = form<TodoConfig>(this.formData);
 
-  tabs = computed(() => Object.keys(this.data()) as (keyof TodoConfig)[]);
+  sideEffects = signal<Change[]>([]);
+
+
+  tabs = computed(() => {
+    const tabs = Object.keys(this.data()).filter((key) =>
+      this.Array.isArray(this.data()[key as keyof TodoConfig]),
+    );
+
+    tabs.push(
+      ...Object.keys(this.data()).filter(
+        (key) => !this.Array.isArray(this.data()[key as keyof TodoConfig]),
+      ),
+    );
+
+    return tabs as(keyof TodoConfig)[];
+  });
   activeTab = linkedSignal<keyof TodoConfig>(() => this.tabs()[0] as keyof TodoConfig);
 
   items = computed<string[]>(() =>
@@ -123,8 +140,7 @@ export class SettingsForm {
   }
 
   handleSubmit() {
-    const value = this.form().value();
-    this.onSave.emit(value);
+    this.onSave.emit({value:this.formData(), sideEffects: this.sideEffects()});
   }
   onTabClick = (tab: keyof TodoConfig) => {
     this.activeTab.set(tab as StringArrayKey);
@@ -136,5 +152,8 @@ export class SettingsForm {
 
   onWorkFlowChange(data: TodoConfig['Workflow Statuses']) {
     this.form['Workflow Statuses']().value.set(data);
+  }
+  onPriorityColorChange(data: TodoConfig['Priority Colors']){
+   this.form['Priority Colors']().value.set(data);
   }
 }

@@ -27,6 +27,7 @@ import { form, FormField } from '@angular/forms/signals';
           <input
             type="text"
             [formField]="form[index]"
+            (blur)="trackSideEffect(index, $event)"
             class="w-full px-3 py-2 border border-muted-foreground/30 rounded-md focus:outline-none focus:ring-2 focus:ring-primary/70 focus:border-transparent"
           />
           <button
@@ -46,8 +47,12 @@ export class StringArrayInput {
   ADD = ADD;
   MINUS = MINUS;
   onChange = output<string[]>();
-
+  onSideEffect = output<Change>()
+  
+  key = input.required<string>()
   items = input.required<string[]>();
+
+  indexMap = linkedSignal(()=> this.items().map((_,i)=>({initial: i, current: i}))) // to track changes by index
   formData = linkedSignal(() => this.items());
   form = form<string[]>(this.formData);
 
@@ -56,12 +61,28 @@ export class StringArrayInput {
 
   onArrayItemDelete(index: number) {
     this.form().value.update((pre) => pre.filter((_, i) => i !== index));
+
+    this.indexMap.update(pre=> pre.map(ele=> {
+      if(ele.current == index)
+        ele.current = -Infinity
+      if(ele.current > index){
+        ele.current = ele.current - 1;
+      }
+      return ele;
+    }))
+
+
   }
   onNewTextAdd() {
     const newText = this.text();
     if (!newText) return;
     this.formData.update((pre)=>[newText,...pre])
     // this.form().value.update((pre) => [newText, ...pre]); // same as above
+
+    this.indexMap.update(pre=> pre.map(ele=> {
+      ele.current = ele.current + 1
+      return ele;
+    }))
 
     this.form().markAsDirty()
     
@@ -70,8 +91,25 @@ export class StringArrayInput {
   }
 
   onDataChange(items: string[]) {
-    if (this.form().dirty()) 
+    if (this.form().dirty()){
       this.onChange.emit(items);
+
+      console.log({
+        old: this.items(),
+        new: items,
+
+        i : this.indexMap()
+
+      })
+    }
+       
+  }
+
+  trackSideEffect(index: number, event: Event){
+    const value = (event.target as HTMLInputElement).value.trim().toUpperCase();
+
+    console.log({value, index, old: this.formData()[index]})
+                  
   }
 
   constructor() {

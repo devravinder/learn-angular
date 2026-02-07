@@ -1,5 +1,5 @@
 // color-picker.component.ts
-import { Component, input, linkedSignal } from '@angular/core';
+import { Component, effect, input, linkedSignal, output } from '@angular/core';
 import { form, FormField } from '@angular/forms/signals';
 
 @Component({
@@ -7,7 +7,7 @@ import { form, FormField } from '@angular/forms/signals';
   standalone: true,
   imports: [FormField],
   template: `
-    <div class="flex flex-col gap-2">
+    <div class="min-w-0 flex flex-col gap-2">
       <label class="text-sm font-medium text-foreground">
         {{ label() }}
       </label>
@@ -21,8 +21,8 @@ import { form, FormField } from '@angular/forms/signals';
         <!-- Color swatch picker -->
         <input
           type="color"
-          [formField]="textForm"
-          class="appearance-none w-7 h-7 rounded-md border border-muted cursor-pointer p-0"
+          [formField]="form"
+          class="appearance-none w-7 h-7 shrink-0 rounded-md border border-muted cursor-pointer p-0"
         />
 
         <!-- Hex input -->
@@ -32,7 +32,7 @@ import { form, FormField } from '@angular/forms/signals';
           (change)="onHexChange($event)"
           placeholder="#000000"
           maxlength="7"
-          class="flex-1 px-3 py-1.5 text-sm bg-transparent focus:outline-none"
+          class="min-w-24 flex-1 px-3 py-1.5 text-sm bg-transparent focus:outline-none"
         />
       </div>
     </div>
@@ -48,9 +48,10 @@ import { form, FormField } from '@angular/forms/signals';
 export class ColorPicker {
   value = input.required<string>();
   label = input.required<string>();
+  onChange = output<string>();
 
   text = linkedSignal(() => this.value());
-  textForm = form<string>(this.text);
+  form = form<string>(this.text);
 
   onHexChange(event: Event) {
     const value = (event.target as HTMLInputElement).value.trim().toUpperCase();
@@ -66,5 +67,14 @@ export class ColorPicker {
     if (/^#[0-9A-Fa-f]{0,6}$/.test(val)) {
       this.text.set(val);
     }
+  }
+
+  onInputChange(data: string) {
+    if (this.form().dirty()) {
+      this.onChange.emit(data);
+    }
+  }
+  constructor() {
+    effect(() => this.onInputChange(this.text()));
   }
 }
