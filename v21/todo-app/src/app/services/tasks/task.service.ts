@@ -115,26 +115,39 @@ export class TaskService {
     this.tasks.update((prev) => prev.filter((task) => task.Id !== taskId));
   };
 
-  updateTaskField = (key: keyof Task, from: Task[keyof Task], to: Task[keyof Task]) => {
-    this.tasks.update((pre) => pre.map((old) => (old[key] === from ? { ...old, [key]: to } : old)));
+  updateTaskField = <K extends keyof Task, V extends Task[K]>(
+    key: K,
+    from: V,
+    to: V,
+    tasks: Task[],
+  ) => {
+    tasks.forEach((old) => {
+      if (old[key] === from) {
+        old[key] = to!;
+      }
+    });
   };
 
   handleSideEffects = (sideEffects: Change[]) => {
+    const currentTasks = [...this.tasks()];
     for (const { key, oldValue, newValue, type } of sideEffects) {
       if (key in SideEffectKey && type === 'UPDATE') {
         this.updateTaskField(
           SideEffectKey[key as keyof TodoConfig]!,
           oldValue as string,
           newValue as string,
+          currentTasks,
         );
-        // for DELETE, we don't delete tasks
+        // for DELETE & ADD, we do nothing
       }
     }
+
+    this.tasks.set(currentTasks);
   };
 
   onConfigChange = (value: TodoConfig, sideEffects: Change[]) => {
     this.handleSideEffects(sideEffects);
-    this.config.set(value)
+    this.config.set(value);
   };
 
   getTask(id: string) {
