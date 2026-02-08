@@ -10,17 +10,19 @@ import { getId } from '../../util/common';
 type StringArrayKey = ArrayKeys<TodoConfig>;
 
 // converts List[] value to object
+const listToMap = (list: List[]) =>
+  list.reduce(
+    (pre, cur) => {
+      pre[cur.id] = cur;
+      return pre;
+    },
+    {} as Record<string, List>,
+  );
+
 const toMap = (input: Record<string, List[]>) => {
   return Object.keys(input).reduce(
     (map, key) => {
-      map[key] = input[key].reduce(
-        (pre, cur) => {
-          pre[cur.id] = cur;
-          return pre;
-        },
-        {} as Record<string, List>,
-      );
-
+      map[key] = listToMap(input[key]);
       return map;
     },
     {} as Record<string, Record<string, List>>,
@@ -236,14 +238,64 @@ export class SettingsForm {
     const formData = this.formData();
     const stringValues = revertListMap(this.currentListValues());
     const value = { ...formData, ...stringValues };
+
     this.onSave.emit({ value, changes });
   }
   onTabClick = (tab: keyof TodoConfig) => {
     this.activeTab.set(tab as StringArrayKey);
   };
 
-  onStringArrayChange(tab: keyof TodoConfig, values: List[]) {
-    this.currentListValues()[tab as unknown as StringArrayKey] = values;
+  handleDependents(key: keyof TodoConfig, values: List[]) {
+    // if priority Low is changed to Low-1 then 'Priority Colors' should be chaanged accordingly
+
+    const initialListValues = this.initialListValues();
+    switch (key) {
+      case 'Priorities': {
+        const map = listToMap(initialListValues[key]);
+        for (const item of values) {
+          const newValue = item.value;
+          const oldValue = map[item.id]?.value;
+          if (oldValue && newValue !== oldValue) {
+            this.form['Priority Colors']().value.update((pre) => {
+              pre[newValue] = pre[oldValue];
+              delete pre[oldValue];
+              return pre;
+            });
+          }
+        }
+
+        break;
+      }
+      case 'Statuses': {
+        const map = listToMap(initialListValues[key]);
+        for (const item of values) {
+          const newValue = item.value;
+          const oldValue = map[item.id]?.value;
+
+          if (oldValue && newValue !== oldValue) {
+            this.form['Workflow Statuses']().value.update((pre) => {
+              for (const key in pre) {
+                // work around for Type issue
+                if (pre[key as 'CREATE_STATUS'] === oldValue) {
+                  pre[key as 'CREATE_STATUS'] = newValue;
+                }
+              }
+
+              return pre;
+            });
+          }
+        }
+
+        break;
+      }
+    }
+  }
+
+  onStringArrayChange(key: keyof TodoConfig, values: List[]) {
+    this.currentListValues()[key as unknown as StringArrayKey] = values;
+
+    // dependents
+    this.handleDependents(key, values);
   }
 
   onWorkFlowChange(data: TodoConfig['Workflow Statuses']) {

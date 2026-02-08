@@ -24,11 +24,12 @@ export type List = { id: string; value: string };
       </button>
     </div>
 
-    @for (item of formData(); track $index; let index = $index) {
+    @for (item of formData(); track item.id; let index = $index) {
       <div class="w-full flex flex-row gap-2">
         <input
           type="text"
-          [formField]="form[index].value"
+          [value]="item.value"
+          (blur)="updateItem(index, $event)"
           class="w-full px-3 py-2 border border-muted-foreground/30 rounded-md focus:outline-none focus:ring-2 focus:ring-primary/70 focus:border-transparent"
         />
         <button
@@ -74,6 +75,15 @@ export class StringArrayInput {
     this.form().markAsDirty();
 
     this.text.set('');
+  }
+
+  updateItem(index: number, event: Event){
+    const value = (event.target as HTMLInputElement).value.trim()
+    this.form[index]().value.update( pre=> {
+      pre.value = value
+      return pre
+    } )
+    this.form().markAsDirty();
   }
   onDataChange(items: List[]) {
     if (this.form().dirty()) this.onChange.emit(items);
