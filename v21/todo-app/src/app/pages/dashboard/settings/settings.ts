@@ -30,7 +30,7 @@ export class Settings {
     this.router.navigate(['..'], { relativeTo: this.route });
   }
 
-  async onSubmit(data: TodoConfig) {
+  async onSubmit(data: {value: TodoConfig, changes: Change[]}) {
     console.log({ data });
     this.goToParent();
   }

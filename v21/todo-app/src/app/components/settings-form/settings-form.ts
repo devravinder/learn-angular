@@ -1,12 +1,62 @@
 import { NgClass } from '@angular/common';
-import { Component, computed, input, linkedSignal, output, signal } from '@angular/core';
+import { Component, computed, effect, input, linkedSignal, output, signal } from '@angular/core';
 import { form } from '@angular/forms/signals';
 import { ADD, MINUS } from '../../util/icons';
-import { StringArrayInput } from '../string-array-input/string-array-input';
+import { List, StringArrayInput } from '../string-array-input/string-array-input';
 import { WorkflowStatusInput } from '../workflow-status-input/workflow-status-input';
 import { PriorityColorsInput } from '../priority-colors-input/priority-colors-input';
+import { getId } from '../../util/common';
 
 type StringArrayKey = ArrayKeys<TodoConfig>;
+
+// converts List[] value to object
+const toMap = (input: Record<string, List[]>) => {
+  return Object.keys(input).reduce(
+    (map, key) => {
+      map[key] = input[key].reduce(
+        (pre, cur) => {
+          pre[cur.id] = cur;
+          return pre;
+        },
+        {} as Record<string, List>,
+      );
+
+      return map;
+    },
+    {} as Record<string, Record<string, List>>,
+  );
+};
+
+const toList = (values: string[]) => values.map((value) => ({ id: getId(), value }));
+const toString = (values: List[]) => values.map((ele) => ele.value);
+
+const arrayKeys = <T extends object>(obj: T) =>
+  Object.keys(obj).filter((key) => Array.isArray(obj[key as keyof T])) as ArrayKeys<T>[];
+
+const nonArrayKeys = <T extends object>(obj: T) =>
+  Object.keys(obj).filter((key) => !Array.isArray(obj[key as keyof T]));
+
+const toListMap = (obj: TodoConfig) => {
+  const keys = arrayKeys(obj);
+
+  const res = {} as Record<StringArrayKey, List[]>;
+
+  for (const key of keys) {
+    res[key] = toList(obj[key]);
+  }
+
+  return res;
+};
+
+const revertListMap = (obj: Record<StringArrayKey, List[]>) => {
+  const res = {} as Record<StringArrayKey, string[]>;
+
+  for (const key in obj) {
+    res[key as StringArrayKey] = toString(obj[key as StringArrayKey]);
+  }
+
+  return res;
+};
 
 @Component({
   selector: 'app-settings-form',
@@ -35,26 +85,26 @@ type StringArrayKey = ArrayKeys<TodoConfig>;
         <div class="flex-1 flex flex-col gap-2 p-4 overflow-auto">
           <h3 class="text-lg font-medium text-foreground px-2">Manage {{ activeTab() }}</h3>
           <div class="flex flex-col gap-4 overflow-auto max-h-92 p-2">
-            @if (isArray()) {
-            <app-string-array-input
-              [items]="items()"
-              (onChange)="onStringArrayChange(activeTab(), $event)"
-            />
-          }
-          @if (activeTab() === 'Workflow Statuses') {
-            <app-workflow-status-input
-              [workFlow]="formData()['Workflow Statuses']"
-              [statuses]="formData()['Statuses']"
-              (onChange)="onWorkFlowChange($event)"
-            />
-          }
+            @if (activeItems().length) {
+              <app-string-array-input
+                [items]="activeItems()"
+                (onChange)="onStringArrayChange(activeTab(), $event)"
+              />
+            }
+            @if (activeTab() === 'Workflow Statuses') {
+              <app-workflow-status-input
+                [workFlow]="formData()['Workflow Statuses']"
+                [statuses]="formData()['Statuses']"
+                (onChange)="onWorkFlowChange($event)"
+              />
+            }
 
-          @if (activeTab() === 'Priority Colors') {
-            <app-priority-colors-input 
-             [priorityColors]="formData()['Priority Colors']"
-             (onChange)="onPriorityColorChange($event)"
-            />
-          }
+            @if (activeTab() === 'Priority Colors') {
+              <app-priority-colors-input
+                [priorityColors]="formData()['Priority Colors']"
+                (onChange)="onPriorityColorChange($event)"
+              />
+            }
           </div>
         </div>
       </div>
@@ -101,39 +151,26 @@ export class SettingsForm {
   ADD = ADD;
   MINUS = MINUS;
   onCancel = output<void>();
-  onSave = output<TodoConfig>();
+  onSave = output<{ value: TodoConfig; changes: Change[] }>();
   data = input.required<TodoConfig>();
   readonly formData = linkedSignal(() => this.data());
   protected readonly form = form<TodoConfig>(this.formData);
 
-  sideEffects = signal<Change[]>([]);
-
-
   tabs = computed(() => {
-    const tabs = Object.keys(this.data()).filter((key) =>
-      this.Array.isArray(this.data()[key as keyof TodoConfig]),
-    );
+    const tabs: string[] = arrayKeys(this.data());
 
-    tabs.push(
-      ...Object.keys(this.data()).filter(
-        (key) => !this.Array.isArray(this.data()[key as keyof TodoConfig]),
-      ),
-    );
+    tabs.push(...nonArrayKeys(this.data()));
 
-    return tabs as(keyof TodoConfig)[];
+    return tabs as (keyof TodoConfig)[];
   });
   activeTab = linkedSignal<keyof TodoConfig>(() => this.tabs()[0] as keyof TodoConfig);
 
-  isArray = computed(()=>Array.isArray(this.data()[this.activeTab()]))
+  // for string[]
+  initialListValues = computed(() => toListMap(this.data()));
 
-  items = computed<string[]>(() =>
-    this.isArray()
-      ? (this.formData()[this.activeTab()] as string[])
-      : [],
-  );
+  currentListValues = linkedSignal(() => structuredClone(this.initialListValues())); // deep clone
 
-  newText = signal('');
-  newTextForm = form<string>(this.newText);
+  activeItems = computed(() => this.currentListValues()[this.activeTab() as StringArrayKey] || []);
 
   handleCancel() {
     this.onCancel.emit();
@@ -141,23 +178,78 @@ export class SettingsForm {
 
   handleReset() {
     this.form().reset(this.data());
+    this.currentListValues.set(this.initialListValues());
+  }
+
+  getChageEffects() {
+    const initialMap = toMap(this.initialListValues());
+    const currentMap = toMap(this.currentListValues());
+
+    const changes: Change[] = [];
+
+    for (let [key, obj] of Object.entries(initialMap)) {
+      for (let [id, value] of Object.entries(obj)) {
+        const oldValue = value.value;
+        const newValue = currentMap[key][id]?.value;
+
+        if (oldValue !== newValue) {
+          if (!newValue) {
+            changes.push({
+              key,
+              oldValue: value.value,
+              type: 'DELETE',
+            });
+          } else {
+            changes.push({
+              key,
+              oldValue,
+              newValue,
+              type: 'UPDATE',
+            });
+          }
+        }
+      }
+    }
+
+    // new
+
+    for (let [key, obj] of Object.entries(currentMap)) {
+      for (let [id, value] of Object.entries(obj)) {
+        const newValue = value.value;
+        const initial = initialMap[key][id];
+
+        if (newValue && !initial) {
+          changes.push({
+            key,
+            newValue,
+            type: 'ADD',
+          });
+        }
+      }
+    }
+
+    return changes;
   }
 
   handleSubmit() {
-    this.onSave.emit(this.formData());
+    const changes = this.getChageEffects();
+    const formData = this.formData();
+    const stringValues = revertListMap(this.currentListValues());
+    const value = { ...formData, ...stringValues };
+    this.onSave.emit({ value, changes });
   }
   onTabClick = (tab: keyof TodoConfig) => {
     this.activeTab.set(tab as StringArrayKey);
   };
 
-  onStringArrayChange(tab: keyof TodoConfig, values: string[]) {
-    this.form[tab as StringArrayKey]().value.set(values);
+  onStringArrayChange(tab: keyof TodoConfig, values: List[]) {
+    this.currentListValues()[tab as unknown as StringArrayKey] = values;
   }
 
   onWorkFlowChange(data: TodoConfig['Workflow Statuses']) {
     this.form['Workflow Statuses']().value.set(data);
   }
-  onPriorityColorChange(data: TodoConfig['Priority Colors']){
-   this.form['Priority Colors']().value.set(data);
+  onPriorityColorChange(data: TodoConfig['Priority Colors']) {
+    this.form['Priority Colors']().value.set(data);
   }
 }
