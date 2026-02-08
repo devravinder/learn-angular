@@ -35,7 +35,7 @@ type StringArrayKey = ArrayKeys<TodoConfig>;
         <div class="flex-1 flex flex-col gap-2 p-4 overflow-auto">
           <h3 class="text-lg font-medium text-foreground px-2">Manage {{ activeTab() }}</h3>
           <div class="flex flex-col gap-4 overflow-auto max-h-92 p-2">
-            @if (items().length) {
+            @if (isArray()) {
             <app-string-array-input
               [items]="items()"
               (onChange)="onStringArrayChange(activeTab(), $event)"
@@ -124,8 +124,10 @@ export class SettingsForm {
   });
   activeTab = linkedSignal<keyof TodoConfig>(() => this.tabs()[0] as keyof TodoConfig);
 
+  isArray = computed(()=>Array.isArray(this.data()[this.activeTab()]))
+
   items = computed<string[]>(() =>
-    Array.isArray(this.data()[this.activeTab()])
+    this.isArray()
       ? (this.formData()[this.activeTab()] as string[])
       : [],
   );
