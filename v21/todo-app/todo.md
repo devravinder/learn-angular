@@ -72,45 +72,36 @@
 - text-color: #166534
 - bg-color: #bcfbd2
 
-## Tasks
+## 📋 Tasks
 
-### ✅ Done
+### 📝 To Do
 
-#### 001 | Priority Color in Task card
+#### 6b2a | Move project to todo
 
-- Title: Priority Color in Task card
-- Status: ✅ Done
+- Id: 6b2a
+- AssignedTo: Ravinder
+- lastModifiedDate: 2026-02-09 07:10:12:306
+- Title: Move project to todo
+- Status: 📝 To Do
 - Priority: 🟢 Low
-- createdDate: 2026-02-02 11:34:29:212
-- lastModifiedDate: 2026-02-03 07:10:59:588
-- dueDate: 2026-02-02 05:30:00:000
-- Id: 001
-- completedDate: 2026-02-03 07:10:59:588
+- createdDate: 2026-02-09 07:10:31:192
+- dueDate: 2026-02-09 05:30:00:000
+
+#### 3600 | deploy this project
+
+- Id: 3600
+- AssignedTo: Ravinder
+- lastModifiedDate: 2026-02-09 07:10:33:117
+- Category: DevOps
+- Title: deploy this project
+- Status: 📝 To Do
+- Priority: 🟢 Low
+- createdDate: 2026-02-09 07:10:52:147
+- dueDate: 2026-02-09 05:30:00:000
 
 ##### Tags
 
-##### Subtasks
-
-### 🚀 In Progress
-
-#### 002 | Settings/Config
-
-- Title: Settings/Config
-- Status: 🚀 In Progress
-- Priority: 🟢 Low
-- createdDate: 2026-02-02 11:34:40:476
-- lastModifiedDate: 2026-02-07 03:40:00:346
-- dueDate: 2026-02-02 05:30:00:000
-- Id: 002
-- Description: With desc
-- startedDate: 2026-02-07 03:40:00:346
-
-##### Subtasks
-
-- [ ] Test
-- [x] SAgaub
-
-##### Tags
+- #urgent
 
 ---
 To view this file in Kanban dashboard open this file(file parent folder) with [Task Manager](https://todo.paravartech.com/)
