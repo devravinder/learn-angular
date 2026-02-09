@@ -6,7 +6,9 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "deploy": "pnpm run build && gh-pages --cname=todo.paravartech.com --dist dist/todo-app/browser --branch deploy"
+
   },
   "prettier": {
     "printWidth": 100,
@@ -39,6 +41,7 @@
     "@angular/cli": "^21.1.2",
     "@angular/compiler-cli": "^21.1.0",
     "@tailwindcss/postcss": "^4.1.12",
+    "gh-pages": "^6.3.0",
     "jsdom": "^27.1.0",
     "postcss": "^8.5.3",
     "tailwindcss": "^4.1.12",
