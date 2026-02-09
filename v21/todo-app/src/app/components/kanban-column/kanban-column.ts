@@ -1,6 +1,7 @@
-import { Component, input, output } from '@angular/core';
+import { Component, inject, input, output } from '@angular/core';
 import { ADD } from '../../util/icons';
 import { TaskCard } from '../task-card/task-card';
+import { TaskService } from '../../services/tasks/task.service';
 
 @Component({
   selector: 'app-kanban-column',
@@ -25,15 +26,19 @@ import { TaskCard } from '../task-card/task-card';
       }
     </div>
 
-    <div class="grow p-4 space-y-3">
+    <div
+      class="grow p-4 space-y-3"
+      (dragover)="onDragOver($event)"
+      (drop)="onDragDrop($event, title())"
+    >
       @for (task of tasks(); track task.Id) {
-        <div>
+        <div draggable="true" (dragstart)="onDragStart($event, task.Id!)">
           <app-task-card [task]="task" />
         </div>
       }
 
       @if (!tasks()?.length) {
-        <div class="text-center py-8 text-muted-foreground">
+        <div class="text-center py-16 text-muted-foreground">
           <p class="text-sm">No tasks yet</p>
           <button
             (click)="onAddClick.emit(title())"
@@ -48,8 +53,27 @@ import { TaskCard } from '../task-card/task-card';
   styles: ``,
 })
 export class KanbanColumn {
+  taskService = inject(TaskService)
   tasks = input<Task[]>();
   title = input.required<string>();
   ADD = ADD;
   onAddClick = output<string>();
+
+  onDragStart = (event: Event, taskId: string) => {
+    const e = event as DragEvent;
+    e.dataTransfer?.setData('text/plain', taskId);
+  };
+
+  onDragOver = (e: Event) => {
+    e.preventDefault();
+  };
+
+  onDragDrop = async(event: Event, targetStatus: string) => {
+    event.preventDefault();
+
+    const e = event as DragEvent;
+    const taskId = e.dataTransfer?.getData('text/plain');
+    if(taskId)
+     await this.taskService.changeStatus(taskId, targetStatus)
+  };
 }
