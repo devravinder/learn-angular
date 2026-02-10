@@ -9,6 +9,13 @@
 - type of selectors
 - componets composition
 - directives, pipes, data binding, event binding, two-way binding
+- directive types
+  - structural:
+    - @if, @for, ngSwitch
+    - NgComponentOutlet
+  - attribute
+    - ngModal (for two way binding )
+  
 - @if, @for, detect (key)
 - routing, forms
   - ActivatedRoute
@@ -41,18 +48,31 @@
 - Component Lifecycle - [Ref](https://angular.dev/guide/components/lifecycle) ***
 - context ?
 - Custom events with outputs
-- `<ng-content>` ( single & multiple)
-- `ng-template`, `<ng-container>`
+- content projection (slots)
+  - `<ng-content>` ( single & multiple)
+  - `ng-template`, `<ng-container>`
+  - conditional projections with
+    - NgComponentOutlet
+
 - Variables in templates
   - @let
-- Deferred loading
+- Deferred loading (lazy loading)
   - @defer
-- Host elements, host ( Binding to the host element )
+- Host elements, host ( Binding to the host element ) [Ref](https://angular.dev/guide/components/host-elements)
   - The @HostBinding and @HostListener
   - Binding collisions
   - Injecting host element attributes
-- Referencing component children with queries
-  - viewChild
+    - using inject & HostAttributeToken
+- Referencing component children with queries ( accessing child component state )
+  - viewChild (@ViewChild) ***
+    - viewChildren - for multiple
+  - contentChild ( @ContentChild )
+    - contentChildren
+
+- Dynamic components (Programatically rendering ) [Ref](https://angular.dev/guide/components/programmatic-rendering#using-viewcontainerref)
+
+  - ViewContainerRef & viewChild
+  - NgComponentOutlet
 
 ## Observations
 
